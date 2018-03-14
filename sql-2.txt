@@ -1,0 +1,102 @@
+PRACTICE JOINS
+
+select * from invoice i
+join invoiceline il on il.invoiceid = i.invoiceid
+where il.unitprice > 0.99;
+
+select i.invoicedate, c.firstname, c.lastname, i.total
+from invoice i join customer c on i.customerid = c.customerid;
+
+select c.firstname, c.lastname, e.firstname, e.lastname
+from customer c join employee e on c.supportrepid = e.employeeid;
+
+select alb.title, art.name from album alb
+join artist art on alb.artistid = art.artistid;
+
+select plt.trackid from playlisttrack plt
+join playlist pl on pl.playlistid = plt.playlistid
+where pl.name = 'Music';
+
+select t.name from track t
+join playlisttrack plt on plt.trackid = t.trackid
+where plt.playlistid = 5;
+
+select t.name, pl.name from track t
+join playlisttrack plt on t.trackid = plt.trackid
+join playlist pl on plt.playlistid = pl.playlistid;
+
+select t.name, a.title from track t
+join album a on t.albumid = a.albumid
+join genre g on g.genreid = t.genreid
+where g.name = 'Alternative';
+
+PRACTICE NESTED QUERIES
+
+select * from invoice where invoiceid in 
+(select invoiceid from invoiceline where unitprice > 0.99);
+
+select * from playlisttrack where playlistid =
+(select playlistid from playlist where name = 'Music');
+
+select name from track where trackid in 
+(select trackid from playlisttrack where playlistid = 5);
+
+select * from track where genreid in 
+(select genreid from genre where name = 'Comedy');
+
+select * from track where albumid in 
+(select albumid from album where title = 'Fireball');
+
+select * from track where albumid in (
+  select albumid from album where artistid in (
+    select artistid from artist where name = 'Queen')
+  );
+  
+PRACTICE UPDATING ROWS
+ 
+update customer set fax = null 
+where fax is not null;
+
+update customer set company = 'Self'
+where company is null;
+
+update customer set lastname = 'Thompson'
+where firstname = 'Julia' and lastname = 'Barnett';
+
+update customer set supportrepid = 4
+where email = 'luisrojas@yahoo.cl';
+
+update track set composer = "The darkness around us"
+where genreid = (select genreid from genre where name = 'Metal')
+and composer is null;
+
+GROUP BY
+
+select count(*), g.name from track t 
+join genre g on t.genreid = g.genreid
+group by g.name;
+
+select count(*), g.name from track t 
+join genre g on g.genreid = t.genreid
+where g.name = 'Pop' or g.name = 'Rock' group by g.name;
+
+select ar.name, count(*) from artist ar
+join album al on ar.artistid = al.artistid
+group by al.artistid;
+
+USE DISTINCT
+
+select distinct composer from track;
+
+select distinct billingpostalcode from invoice;
+
+select distinct company from customer;
+
+DELETE ROWS
+
+delete from practice_delete where type = 'bronze';
+
+delete from practice_delete where type = 'silver';
+
+delete from practice_delete where value is 150;
+
